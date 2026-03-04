@@ -11,7 +11,7 @@ export function Navbar() {
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
 
                 {/* Logo */}
-                <Link href="/" className="text-xl font-bold tracking-tight">
+                <Link href="/public" className="text-xl font-bold tracking-tight">
                     Link<span className="text-primary">Bio</span>
                 </Link>
 
