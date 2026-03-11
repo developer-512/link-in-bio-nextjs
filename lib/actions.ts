@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import {AuthError} from "next-auth";
 import {auth, signIn} from "@/auth";
 import {objectInputType, objectOutputType, ZodTypeAny} from "zod";
+import {revalidatePath} from "next/cache";
 
 export async function signup(formData: FormData) {
     const name = formData.get("name") as string
@@ -91,6 +92,7 @@ export async function authenticate(identifier: string, password: string) {
             password: password,
             redirect: false, // Prevents automatic redirect to handle errors via toast
         })
+        revalidatePath('/')
         return null;
     }catch (error){
         if (error instanceof AuthError) {

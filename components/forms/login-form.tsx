@@ -14,7 +14,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import {redirect, useRouter} from "next/navigation"
 import {useState} from "react";
 import {Loader2} from "lucide-react";
 import {authenticate} from "@/lib/actions";
@@ -50,20 +50,26 @@ export function LoginForm() {
             //     password: values.password,
             //     redirect: false, // Prevents automatic redirect to handle errors via toast
             // })
-            const res= await authenticate(values.identifier,values.password);
+            const err= await authenticate(values.identifier,values.password);
 
-            if (res) {
+            if (err) {
                 toast.error("Invalid username/email or password")
                 setIsLoading(false)
             } else {
+                setIsLoading(true)
                 toast.success("Welcome back!")
-                setTimeout(()=>router.push("/"),3000);
+                setTimeout(() => {
+                    setIsLoading(false)
+                    router.push("/")   // ✅ correct redirect
+                    router.refresh()   // optional: refresh server components/session
+                }, 2000)
             }
 
         } catch (error) {
             toast.error("An unexpected error occurred.")
-        } finally {
             setIsLoading(false)
+        } finally {
+            //setIsLoading(false)
         }
     }
     return (
