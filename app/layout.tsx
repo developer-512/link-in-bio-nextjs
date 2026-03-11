@@ -3,7 +3,9 @@ import {Geist, Geist_Mono, Inter} from "next/font/google";
 import "./globals.css";
 import {Navbar} from "@/components/layout/navbar";
 import {Footer} from "@/components/layout/footer";
+import {AnimatedMesh} from "@/components/layout/animated-mesh";
 import {cn} from "@/lib/utils";
+import {Toaster} from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +35,15 @@ export default function RootLayout({
               "min-h-screen bg-background text-foreground antialiased"
           )}
       >
+      <AnimatedMesh />
       <div className="relative flex min-h-screen flex-col">
+
           <Navbar />
 
           <main className="flex-1">
               {children}
           </main>
-
+          <Toaster />
           <Footer />
       </div>
       </body>

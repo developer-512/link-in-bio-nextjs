@@ -1,52 +1,68 @@
-"use client"
-
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
+import {Moon, Sun, Menu, PowerIcon} from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {getSessionUser} from "@/lib/actions";
+import {signOut} from "@/auth";
 
-export function Navbar() {
+
+export async function Navbar() {
+    // const { data: session } = useSession()
+    const user =await getSessionUser(); // replace later with auth session
+    // console.log(user);
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
-
-                {/* Logo */}
-                <Link href="/public" className="text-xl font-bold tracking-tight">
+        <header className="sticky top-0 z-50 border-b bg-background/70 backdrop-blur">
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+                <Link href="/" className="text-xl font-bold">
                     Link<span className="text-primary">Bio</span>
                 </Link>
 
-                {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="/pricing" className="hover:text-primary transition">
-                        Pricing
-                    </Link>
-                    <Link href="/login">
-                        <Button variant="ghost">Login</Button>
-                    </Link>
-                    <Link href="/register">
-                        <Button>Get Started</Button>
-                    </Link>
+                <nav className="hidden md:flex items-center gap-6">
+
+                    <Link href="/pricing">Pricing</Link>
+
+                    {user ? (
+                        <>
+                            <Link href={"/"+user.username}>{user.username}</Link>
+
+                            <form action={async () => {
+                                "use server";
+                                await signOut({redirectTo:'/'})
+                            }}>
+                                <Button>
+                                    <PowerIcon className="w-6" />
+                                    <div className="hidden md:block">Sign Out</div>
+                                </Button>
+                            </form>
+
+                        </>
+                    ) : (
+                        <>
+                            {/*<Button variant="ghost" href>Login</Button>*/}
+                            <Link href="/login">Login</Link>
+                            <Button asChild>
+                                <Link href="/signup">Get Started</Link>
+                            </Button>
+                        </>
+                    )}
+
                 </nav>
 
-                {/* Mobile Menu */}
-                <div className="md:hidden">
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                <Menu className="h-5 w-5" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-64">
-                            <div className="flex flex-col gap-4 mt-8">
-                                <Link href="/pricing">Pricing</Link>
-                                <Link href="/login">Login</Link>
-                                <Link href="/register">
-                                    <Button className="w-full">Get Started</Button>
-                                </Link>
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-                </div>
+                {/* Mobile menu */}
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" className="md:hidden">
+                            <Menu />
+                        </Button>
+                    </SheetTrigger>
+
+                    <SheetContent side="right">
+                        <div className="flex flex-col gap-4 mt-8">
+                            <Link href="/pricing">Pricing</Link>
+                            <Button>Get Started</Button>
+                        </div>
+                    </SheetContent>
+                </Sheet>
             </div>
         </header>
     )
